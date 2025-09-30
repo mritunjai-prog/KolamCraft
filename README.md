@@ -146,6 +146,56 @@ Accessible design includes voice-guided instructions, high-contrast modes, multi
 
 ---
 
+## How to Run the Project
+
+### Prerequisites
+- Node.js (version 14 or higher)
+- npm (Node Package Manager)
+- Git
+
+### Installation and Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/mritunjai-prog/KolamCraft.git
+   cd KolamCraft
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Install Vite (if not already installed globally):**
+   ```bash
+   npm install vite
+   ```
+
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser and navigate to:**
+   ```
+   http://localhost:5173
+   ```
+
+### Available Scripts
+
+- `npm run dev` - Starts the development server
+- `npm run build` - Builds the project for production
+- `npm run preview` - Preview the production build locally
+- `npm run lint` - Run ESLint for code quality checks
+
+### Technologies Used in Development
+- **Vite** - Fast build tool and development server
+- **React** - Frontend framework
+- **TypeScript** - Type-safe JavaScript
+- **Tailwind CSS** - Utility-first CSS framework
+
+---
+
 ## Conclusion
 
 KolamCraft is more than an application; it is a movement to bridge past and future, tradition and technology. It empowers users to rediscover daily ritual, cultural identity, and mathematical wonder through a beloved, ancient art form, reimagined for the digital age.
