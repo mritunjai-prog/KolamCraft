@@ -1,0 +1,232 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 30% 7%;
+    --foreground: 210 15% 93%;
+
+    --card: 222 25% 11%;
+    --card-foreground: 210 15% 93%;
+
+    --popover: 222 25% 11%;
+    --popover-foreground: 210 15% 93%;
+
+    --primary: 225 75% 60%;
+    --primary-foreground: 222 30% 7%;
+
+    --secondary: 222 20% 16%;
+    --secondary-foreground: 210 15% 85%;
+
+    --muted: 222 15% 15%;
+    --muted-foreground: 215 12% 55%;
+
+    --accent: 196 80% 55%;
+    --accent-foreground: 222 30% 7%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 222 20% 20%;
+    --input: 222 20% 20%;
+    --ring: 225 75% 60%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 222 25% 9%;
+    --sidebar-foreground: 210 15% 85%;
+    --sidebar-primary: 225 75% 60%;
+    --sidebar-primary-foreground: 222 30% 7%;
+    --sidebar-accent: 222 20% 16%;
+    --sidebar-accent-foreground: 210 15% 85%;
+    --sidebar-border: 222 20% 20%;
+    --sidebar-ring: 225 75% 60%;
+
+    /* Custom tokens */
+    --glow-primary: 225 75% 60%;
+    --glow-accent: 196 80% 55%;
+    --surface-glass: 222 25% 13%;
+    --kolam-line: 210 15% 93%;
+    --kolam-dot: 225 75% 60%;
+    --gradient-hero-start: 222 35% 5%;
+    --gradient-hero-end: 222 28% 9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: "Playfair Display", Georgia, serif;
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow:
+      0 0 20px hsl(225 75% 60% / 0.5),
+      0 0 60px hsl(225 75% 60% / 0.2);
+  }
+
+  .text-glow-sm {
+    text-shadow: 0 0 10px hsl(225 75% 60% / 0.35);
+  }
+
+  .box-glow {
+    box-shadow:
+      0 0 30px hsl(225 75% 60% / 0.2),
+      0 0 60px hsl(225 75% 60% / 0.07);
+  }
+
+  .box-glow-lg {
+    box-shadow:
+      0 0 50px hsl(225 75% 60% / 0.3),
+      0 0 100px hsl(225 75% 60% / 0.12);
+  }
+
+  .glass {
+    background: hsl(222 25% 13% / 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(222 20% 20% / 0.5);
+  }
+
+  .glass-strong {
+    background: hsl(222 25% 13% / 0.85);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid hsl(225 75% 60% / 0.12);
+  }
+
+  .gradient-text {
+    background: linear-gradient(
+      135deg,
+      hsl(225 75% 65%),
+      hsl(196 80% 60%),
+      hsl(225 75% 55%)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-light {
+    background: linear-gradient(135deg, hsl(210 15% 95%), hsl(225 75% 75%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .kolam-pattern-bg {
+    background-image: radial-gradient(
+      circle at center,
+      hsl(225 75% 60% / 0.07) 1px,
+      transparent 1px
+    );
+    background-size: 40px 40px;
+  }
+
+  .card-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .card-3d-inner {
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .card-3d:hover .card-3d-inner {
+    transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-float-slow {
+    animation: float 10s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin 30s linear infinite;
+  }
+
+  .animate-draw-line {
+    animation: drawLine 3s ease-in-out forwards;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    opacity: 0.4;
+    filter: blur(20px);
+  }
+  50% {
+    opacity: 0.8;
+    filter: blur(30px);
+  }
+}
+
+@keyframes drawLine {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(222 30% 7%);
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(225 75% 60% / 0.35);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(225 75% 60% / 0.6);
+}
