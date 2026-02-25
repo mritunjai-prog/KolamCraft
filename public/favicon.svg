@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background -->
+  <rect width="100" height="100" rx="20" fill="#140902"/>
+
+  <!-- Dot grid — axis dots -->
+  <circle cx="50" cy="22" r="3.2" fill="#f0824a" opacity="0.8"/>
+  <circle cx="50" cy="78" r="3.2" fill="#f0824a" opacity="0.8"/>
+  <circle cx="22" cy="50" r="3.2" fill="#f0824a" opacity="0.8"/>
+  <circle cx="78" cy="50" r="3.2" fill="#f0824a" opacity="0.8"/>
+
+  <!-- Dot grid — diagonal dots -->
+  <circle cx="30" cy="30" r="2.4" fill="#f0824a" opacity="0.45"/>
+  <circle cx="70" cy="30" r="2.4" fill="#f0824a" opacity="0.45"/>
+  <circle cx="30" cy="70" r="2.4" fill="#f0824a" opacity="0.45"/>
+  <circle cx="70" cy="70" r="2.4" fill="#f0824a" opacity="0.45"/>
+
+  <!-- Kolam loops — top petal (around dot at 50,22) -->
+  <path d="M43,50 C40,38 35,20 50,17 C65,20 60,38 57,50"
+        fill="none" stroke="#f0824a" stroke-width="3.2" stroke-linecap="round"/>
+
+  <!-- Kolam loops — bottom petal (around dot at 50,78) -->
+  <path d="M43,50 C40,62 35,80 50,83 C65,80 60,62 57,50"
+        fill="none" stroke="#f0824a" stroke-width="3.2" stroke-linecap="round"/>
+
+  <!-- Kolam loops — left petal (around dot at 22,50) -->
+  <path d="M50,43 C38,40 20,35 17,50 C20,65 38,60 50,57"
+        fill="none" stroke="#f0824a" stroke-width="3.2" stroke-linecap="round"/>
+
+  <!-- Kolam loops — right petal (around dot at 78,50) -->
+  <path d="M50,43 C62,40 80,35 83,50 C80,65 62,60 50,57"
+        fill="none" stroke="#f0824a" stroke-width="3.2" stroke-linecap="round"/>
+
+  <!-- Center dot -->
+  <circle cx="50" cy="50" r="5" fill="#f0824a"/>
+</svg>
