@@ -1,4 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Download,
+  Play,
+  Square,
+  Sparkles,
+  Copy,
+  FileCode2,
+  ImageDown,
+  Loader2,
+  ChevronDown,
+} from "lucide-react";
 import { KolamPattern } from "../types/kolam";
 import { KolamExporter } from "../utils/kolamExporter";
 import { KolamGenerator } from "../utils/kolamGenerator";
@@ -30,6 +42,7 @@ export const KolamEditor: React.FC = () => {
   const [animationState, setAnimationState] = useState<
     "stopped" | "playing" | "paused"
   >("stopped");
+  const [copied, setCopied] = useState(false);
   const kolamRef = useRef<HTMLDivElement>(null);
 
   const [size, setSize] = useState(7);
@@ -122,7 +135,7 @@ export const KolamEditor: React.FC = () => {
       } else {
         await KolamExporter.downloadPNG(kolamRef.current, currentPattern.name);
       }
-    } catch (error) {
+    } catch {
       alert("Export failed. Please try again.");
     } finally {
       setIsExporting(false);
@@ -134,146 +147,167 @@ export const KolamEditor: React.FC = () => {
     try {
       const svgContent = await KolamExporter.exportAsSVG(currentPattern);
       await navigator.clipboard.writeText(svgContent);
-      alert("Raw SVG code copied to clipboard!");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch {
       alert("Failed to copy raw SVG.");
     }
   };
 
-  const AMBER_DARK = "#78350f"; // amber-900
-  const AMBER_MED = "#b45309"; // amber-700
-  const AMBER_PALE = "#fef3c7"; // amber-100
-  const AMBER_200 = "#fde68a"; // amber-200
-  const AMBER_300 = "#fcd34d"; // amber-300
-
   return (
-    <div
-      className="kolam-editor min-h-screen"
-      style={{ backgroundColor: AMBER_PALE, color: AMBER_DARK }}
-    >
-      <div className="max-w-6xl mx-auto p-8">
-        {/* Display Area */}
-        <div className="kolam-display-area">
-          {currentPattern ? (
+    <div className="kolam-editor w-full">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-8 items-start">
+        {/* ── Canvas Display ─────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <div className="glass-strong rounded-3xl border border-primary/20 overflow-hidden shadow-2xl relative">
+            {/* subtle ambient glow behind canvas */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] rounded-full bg-primary/10 blur-3xl" />
+            </div>
+
+            {/* canvas content */}
             <div
               ref={kolamRef}
-              className="kolam-container relative flex justify-center items-center p-8 rounded-2xl shadow-lg"
-              style={{
-                backgroundColor: AMBER_DARK,
-                border: "4px solid white",
-              }}
+              className="relative flex justify-center items-center p-8 md:p-12 min-h-[420px]"
             >
-              <KolamDisplay
-                pattern={currentPattern}
-                animate={animationState === "playing"}
-                animationState={animationState}
-                animationTiming={animationDuration}
-                className="kolam-main"
-              />
-
-              {/* Download button */}
-              <div className="absolute top-4 right-4">
-                <div className="relative download-menu">
-                  <button
-                    onClick={() => setShowDownloadMenu(!showDownloadMenu)}
-                    disabled={isExporting}
-                    className="p-3 rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 shadow-lg"
-                    style={{
-                      border: "2px solid white",
-                      backgroundColor: "#f0c75e",
-                      color: "#92400e",
-                    }}
-                    title="Download Options"
+              <AnimatePresence mode="wait">
+                {currentPattern ? (
+                  <motion.div
+                    key={currentPattern.name}
+                    initial={{ opacity: 0, scale: 0.92 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.92 }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
+                    className="w-full"
                   >
-                    {isExporting ? "⏳" : "💾"}
-                  </button>
-
-                  {showDownloadMenu && (
-                    <div
-                      className="absolute right-0 mt-2 rounded-lg shadow-lg py-1 z-10"
-                      style={{
-                        backgroundColor: AMBER_DARK,
-                        border: "2px solid white",
-                        minWidth: "200px",
-                      }}
-                    >
-                      <button
-                        onClick={() => {
-                          exportPattern("svg");
-                          setShowDownloadMenu(false);
-                        }}
-                        className="w-full text-left px-4 py-2 hover:opacity-80 transition-opacity"
-                        style={{ color: AMBER_PALE }}
-                      >
-                        📄 Download SVG
-                      </button>
-                      <button
-                        onClick={() => {
-                          exportPattern("png");
-                          setShowDownloadMenu(false);
-                        }}
-                        className="w-full text-left px-4 py-2 hover:opacity-80 transition-opacity"
-                        style={{ color: AMBER_PALE }}
-                      >
-                        🖼️ Download PNG
-                      </button>
-                      <hr
-                        style={{
-                          margin: "4px 0",
-                          borderColor: "rgba(255,255,255,0.3)",
-                        }}
-                      />
-                      <button
-                        onClick={() => {
-                          copyRawSVG();
-                          setShowDownloadMenu(false);
-                        }}
-                        className="w-full text-left px-4 py-2 hover:opacity-80 transition-opacity"
-                        style={{ color: AMBER_PALE }}
-                      >
-                        📄 Copy Raw SVG
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
+                    <KolamDisplay
+                      pattern={currentPattern}
+                      animate={animationState === "playing"}
+                      animationState={animationState}
+                      animationTiming={animationDuration}
+                      className="kolam-main w-full"
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="loading"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex flex-col items-center gap-3 text-muted-foreground"
+                  >
+                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                    <p className="text-sm">Weaving your first kolam…</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          ) : (
-            <div
-              className="no-pattern text-center py-12 rounded-2xl"
-              style={{ backgroundColor: AMBER_DARK, border: "2px solid white" }}
-            >
-              <p className="text-lg" style={{ color: AMBER_PALE }}>
-                Loading your first kolam...
-              </p>
-            </div>
-          )}
-        </div>
 
-        {/* Controls */}
-        <div
-          className="rounded-2xl p-6 mt-8"
-          style={{ backgroundColor: AMBER_DARK, border: "4px solid white" }}
-        >
-          <h2
-            className="text-xl font-semibold mb-4 flex items-center"
-            style={{ color: AMBER_PALE }}
-          >
-            <span className="mr-2">⚙️</span>
-            Kolam Parameters
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Grid Size */}
-            <div className="parameter-group">
-              <label
-                htmlFor="size"
-                className="block text-sm font-medium mb-2"
-                style={{ color: AMBER_PALE }}
+            {/* Download button — top right overlay */}
+            <div className="absolute top-4 right-4 download-menu z-10">
+              <button
+                onClick={() => setShowDownloadMenu(!showDownloadMenu)}
+                disabled={isExporting}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl glass border border-primary/30 text-primary hover:bg-primary/20 transition-all disabled:opacity-50 text-sm font-medium shadow-lg"
+                title="Download Options"
               >
-                Grid Size
-              </label>
-              <div className="flex items-center space-x-3">
+                {isExporting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4" />
+                )}
+                <ChevronDown className="w-3 h-3" />
+              </button>
+
+              <AnimatePresence>
+                {showDownloadMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 mt-2 glass-strong rounded-2xl border border-border shadow-2xl py-2 min-w-[200px]"
+                  >
+                    <button
+                      onClick={() => {
+                        exportPattern("svg");
+                        setShowDownloadMenu(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                    >
+                      <FileCode2 className="w-4 h-4 text-primary" />
+                      Download SVG
+                    </button>
+                    <button
+                      onClick={() => {
+                        exportPattern("png");
+                        setShowDownloadMenu(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                    >
+                      <ImageDown className="w-4 h-4 text-primary" />
+                      Download PNG
+                    </button>
+                    <div className="mx-3 my-1 h-px bg-border" />
+                    <button
+                      onClick={() => {
+                        copyRawSVG();
+                        setShowDownloadMenu(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                    >
+                      <Copy className="w-4 h-4 text-primary" />
+                      {copied ? "Copied!" : "Copy Raw SVG"}
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Pattern name badge — bottom left */}
+            {currentPattern && (
+              <div className="absolute bottom-4 left-4">
+                <span className="px-3 py-1 rounded-full text-xs font-medium glass border border-primary/20 text-primary/80">
+                  {currentPattern.name}
+                </span>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+        {/* ── Controls Panel ─────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+          className="flex flex-col gap-5"
+        >
+          {/* Parameters card */}
+          <div className="glass rounded-3xl border border-border p-6 shadow-xl">
+            <h2 className="text-base font-semibold text-foreground mb-5 flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                <span className="w-2 h-2 rounded-full bg-primary" />
+              </span>
+              Parameters
+            </h2>
+
+            <div className="space-y-6">
+              {/* Grid Size */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label
+                    htmlFor="size"
+                    className="text-sm font-medium text-muted-foreground"
+                  >
+                    Grid Size
+                  </label>
+                  <span className="px-2.5 py-0.5 rounded-lg bg-primary/20 text-primary text-sm font-bold tabular-nums">
+                    {size}
+                  </span>
+                </div>
                 <input
                   id="size"
                   type="range"
@@ -281,31 +315,26 @@ export const KolamEditor: React.FC = () => {
                   max="15"
                   value={size}
                   onChange={(e) => setSize(parseInt(e.target.value))}
-                  className="flex-1"
-                  style={{ accentColor: "#f0c75e" }}
+                  className="w-full h-2 rounded-full appearance-none cursor-pointer bg-primary/20 accent-[hsl(var(--primary))]"
                 />
-                <div
-                  className="px-3 py-1 rounded min-w-[3rem] text-center font-bold"
-                  style={{ backgroundColor: AMBER_MED, color: AMBER_PALE }}
-                >
-                  {size}
-                </div>
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  Creates a {size}×{size} dot grid
+                </p>
               </div>
-              <div className="text-xs mt-1" style={{ color: AMBER_200 }}>
-                Creates a {size}×{size} pattern grid
-              </div>
-            </div>
 
-            {/* Animation Speed */}
-            <div className="parameter-group">
-              <label
-                htmlFor="animationSpeed"
-                className="block text-sm font-medium mb-2"
-                style={{ color: AMBER_PALE }}
-              >
-                Animation Duration
-              </label>
-              <div className="flex items-center space-x-3">
+              {/* Animation Speed */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label
+                    htmlFor="animationSpeed"
+                    className="text-sm font-medium text-muted-foreground"
+                  >
+                    Animation Speed
+                  </label>
+                  <span className="px-2.5 py-0.5 rounded-lg bg-primary/20 text-primary text-sm font-bold tabular-nums">
+                    {animationSpeed}
+                  </span>
+                </div>
                 <input
                   id="animationSpeed"
                   type="range"
@@ -313,85 +342,91 @@ export const KolamEditor: React.FC = () => {
                   max="10"
                   value={animationSpeed}
                   onChange={(e) => setAnimationSpeed(parseInt(e.target.value))}
-                  className="flex-1"
-                  style={{ accentColor: "#f0c75e" }}
+                  className="w-full h-2 rounded-full appearance-none cursor-pointer bg-primary/20 accent-[hsl(var(--primary))]"
                 />
-                <div
-                  className="px-3 py-1 rounded min-w-[3rem] text-center font-bold"
-                  style={{ backgroundColor: AMBER_MED, color: AMBER_PALE }}
-                >
-                  {animationSpeed}
-                </div>
-              </div>
-              <div className="text-xs mt-1" style={{ color: AMBER_200 }}>
-                Total: {(animationDuration / 1000).toFixed(1)}s
+                <p className="text-xs text-muted-foreground mt-1.5">
+                  Draw time: {(animationDuration / 1000).toFixed(1)}s
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap justify-center items-center gap-4">
+          {/* Actions card */}
+          <div className="glass rounded-3xl border border-border p-6 shadow-xl flex flex-col gap-3">
+            <h2 className="text-base font-semibold text-foreground mb-1 flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                <span className="w-2 h-2 rounded-full bg-primary" />
+              </span>
+              Actions
+            </h2>
+
+            {/* Generate */}
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => generatePattern()}
+              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-primary text-primary-foreground font-semibold text-sm box-glow hover:brightness-110 transition-all shadow-lg"
+              title="Generate new Kolam (G)"
+            >
+              <Sparkles className="w-4 h-4" />
+              Generate Kolam
+            </motion.button>
+
+            {/* Play / Stop */}
             {currentPattern && (
-              <button
+              <motion.button
+                whileTap={{ scale: 0.97 }}
                 onClick={() =>
                   setAnimationState((prev) =>
                     prev === "playing" ? "stopped" : "playing",
                   )
                 }
-                className="px-6 py-3 rounded-lg hover:opacity-90 transition-colors font-medium shadow-lg flex items-center gap-2"
-                style={{
-                  border: "2px solid white",
-                  backgroundColor:
-                    animationState === "playing" ? "#f0c75e" : "#7b3306",
-                  color: animationState === "playing" ? "#92400e" : "white",
-                }}
-                title={animationState === "playing" ? "Stop (P)" : "Play (P)"}
+                className={`w-full flex items-center justify-center gap-2 px-5 py-3 rounded-2xl font-semibold text-sm transition-all border ${
+                  animationState === "playing"
+                    ? "bg-primary/15 border-primary/40 text-primary hover:bg-primary/25"
+                    : "bg-card border-border text-foreground hover:bg-primary/10 hover:border-primary/30"
+                }`}
+                title={
+                  animationState === "playing"
+                    ? "Stop (P)"
+                    : "Play animation (P)"
+                }
               >
-                {animationState === "playing"
-                  ? "⏹️ Stop Animation"
-                  : "▶️ Play Animation"}
-              </button>
+                {animationState === "playing" ? (
+                  <>
+                    <Square className="w-4 h-4" />
+                    Stop Animation
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-4 h-4" />
+                    Play Animation
+                  </>
+                )}
+              </motion.button>
             )}
-
-            <button
-              onClick={() => generatePattern()}
-              className="px-8 py-3 rounded-lg hover:opacity-90 transition-colors font-medium shadow-lg"
-              style={{
-                border: "2px solid white",
-                backgroundColor: "#5ba293",
-                color: "white",
-              }}
-              title="Generate new Kolam (G)"
-            >
-              ✨ Generate Kolam
-            </button>
           </div>
 
-          <p className="text-center text-xs mt-4" style={{ color: AMBER_300 }}>
-            Keyboard shortcuts:{" "}
-            <kbd
-              className="px-1 rounded"
-              style={{ backgroundColor: AMBER_MED, color: AMBER_PALE }}
-            >
-              G
-            </kbd>{" "}
-            Generate &nbsp;
-            <kbd
-              className="px-1 rounded"
-              style={{ backgroundColor: AMBER_MED, color: AMBER_PALE }}
-            >
-              P
-            </kbd>{" "}
-            Play/Stop &nbsp;
-            <kbd
-              className="px-1 rounded"
-              style={{ backgroundColor: AMBER_MED, color: AMBER_PALE }}
-            >
-              Esc
-            </kbd>{" "}
-            Reset
-          </p>
-        </div>
+          {/* Keyboard shortcuts card */}
+          <div className="glass rounded-3xl border border-border p-5 shadow-xl">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">
+              Keyboard Shortcuts
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { key: "G", desc: "Generate" },
+                { key: "P", desc: "Play / Stop" },
+                { key: "Esc", desc: "Reset" },
+              ].map(({ key, desc }) => (
+                <div key={key} className="flex items-center gap-2">
+                  <kbd className="px-2 py-0.5 rounded-lg border border-primary/30 bg-primary/10 text-primary text-xs font-mono font-semibold">
+                    {key}
+                  </kbd>
+                  <span className="text-xs text-muted-foreground">{desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

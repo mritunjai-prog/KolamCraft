@@ -55,7 +55,7 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="mb-6"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium tracking-wider uppercase bg-primary/10 text-primary border border-primary/20">
+            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium tracking-wider uppercase bg-primary/15 text-primary border border-primary/30">
               SIH 2025 • Heritage & Culture
             </span>
           </motion.div>
@@ -64,25 +64,26 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4 }}
-            className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-[1.05] mb-6"
+            className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold leading-tight mb-8 mt-4"
           >
-            <span className="block gradient-text">The Art of</span>
-            <span className="relative block h-[1.2em] overflow-hidden">
+            <span className="block gradient-text pb-1">The Art of</span>
+            <span className="relative block min-h-[1.6em] mt-3">
               {words.map((word, i) => (
                 <motion.span
                   key={word}
-                  className="absolute inset-0 text-glow text-foreground"
-                  initial={{ y: 80, opacity: 0 }}
+                  className="absolute top-0 left-0 right-0 text-glow text-foreground"
+                  style={{ clipPath: "inset(-20% -10% -30% -10%)" }}
+                  initial={{ y: "110%", opacity: 0 }}
                   animate={{
                     y:
                       i === wordIndex
-                        ? 0
+                        ? "0%"
                         : i === (wordIndex - 1 + words.length) % words.length
-                          ? -80
-                          : 80,
+                          ? "-110%"
+                          : "110%",
                     opacity: i === wordIndex ? 1 : 0,
                   }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  transition={{ duration: 0.55, ease: "easeInOut" }}
                 >
                   {word}
                 </motion.span>

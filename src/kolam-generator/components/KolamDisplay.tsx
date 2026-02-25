@@ -31,7 +31,7 @@ export const KolamDisplay: React.FC<KolamDisplayProps> = ({
   };
 
   return (
-    <div className={`kolam-container ${className}`}>
+    <div className={`kolam-container text-foreground ${className}`}>
       <svg
         width={dimensions.width}
         height={dimensions.height}
@@ -51,8 +51,8 @@ export const KolamDisplay: React.FC<KolamDisplayProps> = ({
             cx={dot.center.x}
             cy={dot.center.y}
             r={dot.radius || 3}
-            fill={dot.filled ? dot.color || "white" : "none"}
-            stroke={dot.color || "white"}
+            fill={dot.filled ? "currentColor" : "none"}
+            stroke="currentColor"
             strokeWidth={dot.filled ? 0 : 1}
             className={animate ? "kolam-dot-animated" : "kolam-dot"}
             style={
@@ -81,7 +81,7 @@ export const KolamDisplay: React.FC<KolamDisplayProps> = ({
               <path
                 key={curve.id}
                 d={generateSVGPath(curve.curvePoints)}
-                stroke={curve.color || "white"}
+                stroke="currentColor"
                 strokeWidth={curve.strokeWidth || 2}
                 fill="none"
                 strokeLinecap="round"
@@ -112,7 +112,7 @@ export const KolamDisplay: React.FC<KolamDisplayProps> = ({
                 y1={curve.start.y}
                 x2={curve.end.x}
                 y2={curve.end.y}
-                stroke={curve.color || "white"}
+                stroke="currentColor"
                 strokeWidth={curve.strokeWidth || 2}
                 strokeLinecap="round"
               />

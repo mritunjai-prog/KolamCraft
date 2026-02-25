@@ -135,7 +135,7 @@ const CanvasPreview = () => {
                         cx={`${(col + 1) * 6.5}%`}
                         cy={`${(row + 1) * 9}%`}
                         r={1.8}
-                        fill="hsl(225 75% 60%)"
+                        fill="hsl(43 74% 49%)"
                         initial={{ opacity: 0 }}
                         animate={inView ? { opacity: 0.3 } : {}}
                         transition={{
@@ -156,7 +156,7 @@ const CanvasPreview = () => {
                     cx={400}
                     cy={250}
                     r={115}
-                    fill="hsl(225 75% 60% / 0.06)"
+                    fill="hsl(43 74% 49% / 0.06)"
                     initial={{ scale: 0, opacity: 0 }}
                     animate={inView ? { scale: 1, opacity: 1 } : {}}
                     transition={{ delay: 0.9, duration: 1.5 }}
@@ -165,9 +165,9 @@ const CanvasPreview = () => {
                     <motion.path
                       key={i}
                       d={d}
-                      stroke={i === 17 ? "hsl(196 80% 65%)" : "hsl(225 75% 65%)"}
+                      stroke={i === 17 ? "hsl(43 74% 62%)" : "hsl(225 75% 65%)"}
                       strokeWidth={i === 17 ? 1.5 : 2}
-                      fill={i === 17 ? "hsl(225 75% 60% / 0.12)" : "none"}
+                      fill={i === 17 ? "hsl(43 74% 49% / 0.12)" : "none"}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       initial={{ pathLength: 0, opacity: 0 }}

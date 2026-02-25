@@ -9,7 +9,12 @@ interface Props {
 }
 
 // Generates a symmetric Kolam-like SVG pattern procedurally
-const AnimatedKolamSVG = ({ size = 400, className = "", animate = true, delay = 0 }: Props) => {
+const AnimatedKolamSVG = ({
+  size = 400,
+  className = "",
+  animate = true,
+  delay = 0,
+}: Props) => {
   const center = size / 2;
   const [paths, setPaths] = useState<string[]>([]);
   const [dots, setDots] = useState<{ x: number; y: number }[]>([]);
@@ -36,28 +41,44 @@ const AnimatedKolamSVG = ({ size = 400, className = "", animate = true, delay = 
     // Create looping curves connecting dots across rings
     for (let r = 1; r < rings; r++) {
       const innerStart = dotsPerRing.slice(0, r).reduce((a, b) => a + b, 0);
-      const outerStart = dotsPerRing.slice(0, r + 1).reduce((a, b) => a + b, 0) - dotsPerRing[r];
+      const outerStart =
+        dotsPerRing.slice(0, r + 1).reduce((a, b) => a + b, 0) - dotsPerRing[r];
       const innerCount = dotsPerRing[r];
-      const outerCount = dotsPerRing[r] < dotsPerRing.length ? dotsPerRing[Math.min(r + 1, rings - 1)] : dotsPerRing[r];
+      const outerCount =
+        dotsPerRing[r] < dotsPerRing.length
+          ? dotsPerRing[Math.min(r + 1, rings - 1)]
+          : dotsPerRing[r];
 
       for (let i = 0; i < innerCount; i++) {
         const dot1 = generatedDots[innerStart + i];
-        const nextRingIdx = r < rings - 1 ? outerStart + dotsPerRing[r] + Math.floor((i * dotsPerRing[Math.min(r + 1, rings - 1)]) / innerCount) : innerStart + ((i + 1) % innerCount);
-        
+        const nextRingIdx =
+          r < rings - 1
+            ? outerStart +
+              dotsPerRing[r] +
+              Math.floor(
+                (i * dotsPerRing[Math.min(r + 1, rings - 1)]) / innerCount,
+              )
+            : innerStart + ((i + 1) % innerCount);
+
         if (nextRingIdx < generatedDots.length) {
           const dot2 = generatedDots[nextRingIdx];
           const cpx = center + (dot1.x + dot2.x - 2 * center) * 0.6;
           const cpy = center + (dot1.y + dot2.y - 2 * center) * 0.6;
-          generatedPaths.push(`M ${dot1.x} ${dot1.y} Q ${cpx} ${cpy} ${dot2.x} ${dot2.y}`);
+          generatedPaths.push(
+            `M ${dot1.x} ${dot1.y} Q ${cpx} ${cpy} ${dot2.x} ${dot2.y}`,
+          );
         }
       }
     }
 
     // Create petal curves for the outermost ring
-    const outerStart = dotsPerRing.slice(0, rings).reduce((a, b) => a + b, 0) - dotsPerRing[rings - 1];
+    const outerStart =
+      dotsPerRing.slice(0, rings).reduce((a, b) => a + b, 0) -
+      dotsPerRing[rings - 1];
     for (let i = 0; i < dotsPerRing[rings - 1]; i++) {
       const dot1 = generatedDots[outerStart + i];
-      const dot2 = generatedDots[outerStart + ((i + 1) % dotsPerRing[rings - 1])];
+      const dot2 =
+        generatedDots[outerStart + ((i + 1) % dotsPerRing[rings - 1])];
       const midX = (dot1.x + dot2.x) / 2;
       const midY = (dot1.y + dot2.y) / 2;
       const dx = midX - center;
@@ -65,7 +86,9 @@ const AnimatedKolamSVG = ({ size = 400, className = "", animate = true, delay = 
       const dist = Math.sqrt(dx * dx + dy * dy);
       const cpx = center + (dx / dist) * (dist + size * 0.06);
       const cpy = center + (dy / dist) * (dist + size * 0.06);
-      generatedPaths.push(`M ${dot1.x} ${dot1.y} Q ${cpx} ${cpy} ${dot2.x} ${dot2.y}`);
+      generatedPaths.push(
+        `M ${dot1.x} ${dot1.y} Q ${cpx} ${cpy} ${dot2.x} ${dot2.y}`,
+      );
     }
 
     // Symmetric inner loops
@@ -119,10 +142,18 @@ const AnimatedKolamSVG = ({ size = 400, className = "", animate = true, delay = 
           strokeWidth={1.5}
           strokeLinecap="round"
           filter="url(#glow)"
-          initial={animate ? { pathLength: 0, opacity: 0 } : { pathLength: 1, opacity: 0.8 }}
+          initial={
+            animate
+              ? { pathLength: 0, opacity: 0 }
+              : { pathLength: 1, opacity: 0.8 }
+          }
           animate={{ pathLength: 1, opacity: 0.8 }}
           transition={{
-            pathLength: { duration: 2, delay: delay + i * 0.03, ease: "easeInOut" },
+            pathLength: {
+              duration: 2,
+              delay: delay + i * 0.03,
+              ease: "easeInOut",
+            },
             opacity: { duration: 0.5, delay: delay + i * 0.03 },
           }}
         />
@@ -135,9 +166,11 @@ const AnimatedKolamSVG = ({ size = 400, className = "", animate = true, delay = 
           cx={dot.x}
           cy={dot.y}
           r={size * 0.008}
-          fill="hsl(225 75% 60%)"
+          fill="hsl(43 74% 49%)"
           filter="url(#dotGlow)"
-          initial={animate ? { scale: 0, opacity: 0 } : { scale: 1, opacity: 1 }}
+          initial={
+            animate ? { scale: 0, opacity: 0 } : { scale: 1, opacity: 1 }
+          }
           animate={{ scale: 1, opacity: 1 }}
           transition={{
             duration: 0.4,

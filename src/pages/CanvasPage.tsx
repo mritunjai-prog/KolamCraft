@@ -153,7 +153,7 @@ const CanvasPage: React.FC = () => {
     if (!ctx) return;
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     if (gridType === "none") return;
-    ctx.fillStyle = "#4f9cf9";
+    ctx.fillStyle = "#DAA520";
     dots.forEach((dot) => {
       ctx.beginPath();
       ctx.arc(dot.x, dot.y, 3, 0, 2 * Math.PI);
@@ -608,7 +608,7 @@ const CanvasPage: React.FC = () => {
       const tempCtx = tempCanvas.getContext("2d");
       if (!tempCtx) throw new Error("No ctx");
       if (gridType !== "none") {
-        tempCtx.fillStyle = "#4f9cf9";
+        tempCtx.fillStyle = "#DAA520";
         dots.forEach((dot) => {
           tempCtx.beginPath();
           tempCtx.arc(dot.x, dot.y, 3, 0, 2 * Math.PI);
@@ -1043,7 +1043,7 @@ const CanvasPage: React.FC = () => {
                     onMouseUp={stopDrawing}
                     onMouseLeave={stopDrawing}
                   />
-                  <div className="absolute top-2 left-2 bg-black/70 text-blue-300 px-2 py-1 rounded text-xs font-medium pointer-events-none">
+                  <div className="absolute top-2 left-2 bg-black/70 text-amber-400 px-2 py-1 rounded text-xs font-medium pointer-events-none">
                     {tool.charAt(0).toUpperCase() + tool.slice(1)} Tool
                     {symmetryMode !== "none" && ` • ${symmetryMode} symmetry`}
                   </div>
