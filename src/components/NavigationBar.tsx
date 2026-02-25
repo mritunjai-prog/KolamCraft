@@ -13,7 +13,9 @@ const NavigationBar = () => {
   const { theme, toggleTheme } = useTheme();
 
   // Close mobile menu on route change
-  useEffect(() => { setMobileOpen(false); }, [location.pathname]);
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -110,7 +112,11 @@ const NavigationBar = () => {
           className="md:hidden w-9 h-9 rounded-lg border border-primary/25 bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-all"
           aria-label="Toggle menu"
         >
-          {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+          {mobileOpen ? (
+            <X className="w-4 h-4" />
+          ) : (
+            <Menu className="w-4 h-4" />
+          )}
         </motion.button>
 
         <motion.div
@@ -178,7 +184,10 @@ const NavigationBar = () => {
               scrollNavItems.map((item) => (
                 <button
                   key={item}
-                  onClick={() => { scrollToSection(item); setMobileOpen(false); }}
+                  onClick={() => {
+                    scrollToSection(item);
+                    setMobileOpen(false);
+                  }}
                   className="w-full text-left px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-primary hover:bg-primary/8 transition-colors"
                 >
                   {item}
@@ -202,7 +211,11 @@ const NavigationBar = () => {
                 onClick={toggleTheme}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-primary hover:bg-primary/8 transition-colors"
               >
-                {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                {theme === "dark" ? (
+                  <Sun className="w-4 h-4" />
+                ) : (
+                  <Moon className="w-4 h-4" />
+                )}
                 {theme === "dark" ? "Light mode" : "Dark mode"}
               </button>
               <Link to="/login" className="ml-auto">
