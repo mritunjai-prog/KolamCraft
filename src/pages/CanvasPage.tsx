@@ -275,7 +275,81 @@ const CanvasPage: React.FC = () => {
     };
   };
 
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const getTouchPos = (e: React.TouchEvent<HTMLCanvasElement>): Point => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0] || e.changedTouches[0];
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return {
+      x: (touch.clientX - rect.left) * scaleX,
+      y: (touch.clientY - rect.top) * scaleY,
+    };
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    const point = getTouchPos(e);
+    if (tool === "fill") {
+      setStrokes((prev) => [
+        ...prev,
+        { type: "fill", points: [point], color: brushColor, width: 0, symmetryMode: "none" },
+      ]);
+      return;
+    }
+    isDrawingRef.current = true;
+    setIsDrawing(true);
+    if (tool === "freehand" || tool === "curve") {
+      currentPathRef.current = [point];
+    } else if (tool === "line") {
+      currentPathRef.current = [findNearestDot(point)];
+    } else if (tool === "shape") {
+      shapeStartRef.current = point;
+      setShapeStartPoint(point);
+      setPreviewStroke(null);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    if (!isDrawingRef.current) return;
+    const point = getTouchPos(e);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    if (tool === "eraser") {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, brushWidth * 2, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.globalCompositeOperation = "source-over";
+      return;
+    }
+    if (tool === "freehand" || tool === "curve") {
+      currentPathRef.current = [...currentPathRef.current, point];
+    } else if (tool === "line") {
+      if (currentPathRef.current.length >= 1) {
+        currentPathRef.current = [currentPathRef.current[0], findNearestDot(point)];
+      }
+    } else if (tool === "shape" && shapeStartRef.current) {
+      const radius = Math.hypot(point.x - shapeStartRef.current.x, point.y - shapeStartRef.current.y);
+      const shapeStroke: Stroke = {
+        type: "shape",
+        points: [shapeStartRef.current],
+        color: brushColor,
+        width: brushWidth,
+        symmetryMode,
+        shapeType,
+        shapeDimensions: { radius },
+      };
+      setPreviewStroke(shapeStroke);
+      drawImmediate(shapeStroke);
+      return;
+    }
+    drawImmediate();
+  };
     const point = getMousePos(e);
     if (tool === "fill") {
       setStrokes((prev) => [
@@ -1037,11 +1111,14 @@ const CanvasPage: React.FC = () => {
                     ref={canvasRef}
                     width={canvasWidth}
                     height={canvasHeight}
-                    className="absolute inset-0 w-full h-full cursor-crosshair"
+                    className="absolute inset-0 w-full h-full cursor-crosshair touch-none"
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
                     onMouseLeave={stopDrawing}
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={stopDrawing}
                   />
                   <div className="absolute top-2 left-2 bg-black/70 text-amber-400 px-2 py-1 rounded text-xs font-medium pointer-events-none">
                     {tool.charAt(0).toUpperCase() + tool.slice(1)} Tool
