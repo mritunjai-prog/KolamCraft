@@ -350,6 +350,8 @@ const CanvasPage: React.FC = () => {
     }
     drawImmediate();
   };
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const point = getMousePos(e);
     if (tool === "fill") {
       setStrokes((prev) => [
