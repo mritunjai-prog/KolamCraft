@@ -294,7 +294,13 @@ const CanvasPage: React.FC = () => {
     if (tool === "fill") {
       setStrokes((prev) => [
         ...prev,
-        { type: "fill", points: [point], color: brushColor, width: 0, symmetryMode: "none" },
+        {
+          type: "fill",
+          points: [point],
+          color: brushColor,
+          width: 0,
+          symmetryMode: "none",
+        },
       ]);
       return;
     }
@@ -331,10 +337,16 @@ const CanvasPage: React.FC = () => {
       currentPathRef.current = [...currentPathRef.current, point];
     } else if (tool === "line") {
       if (currentPathRef.current.length >= 1) {
-        currentPathRef.current = [currentPathRef.current[0], findNearestDot(point)];
+        currentPathRef.current = [
+          currentPathRef.current[0],
+          findNearestDot(point),
+        ];
       }
     } else if (tool === "shape" && shapeStartRef.current) {
-      const radius = Math.hypot(point.x - shapeStartRef.current.x, point.y - shapeStartRef.current.y);
+      const radius = Math.hypot(
+        point.x - shapeStartRef.current.x,
+        point.y - shapeStartRef.current.y,
+      );
       const shapeStroke: Stroke = {
         type: "shape",
         points: [shapeStartRef.current],
